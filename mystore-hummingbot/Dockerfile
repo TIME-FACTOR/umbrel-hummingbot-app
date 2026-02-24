@@ -10,10 +10,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-# TA-Lib from source (Hummingbot dependency)
+# TA-Lib from source (Hummingbot dependency); --build needed for aarch64/Pi
 RUN wget -q http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
     && tar -xzf ta-lib-0.4.0-src.tar.gz \
-    && cd ta-lib/ && ./configure --prefix=/usr && make && make install \
+    && cd ta-lib/ \
+    && ./configure --build=aarch64-unknown-linux-gnu --prefix=/usr \
+    && make && make install \
     && cd .. && rm -rf ta-lib ta-lib-0.4.0-src.tar.gz
 
 ENV PYTHONUNBUFFERED=1
