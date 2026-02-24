@@ -1,7 +1,9 @@
+# Use ${APP_DATA_DIR} for build/volume paths so compose works when Umbrel merges
+# multiple -f files (project dir is then legacy-compat, not this app's dir).
 services:
   app_proxy:
     build:
-      context: ./app-proxy
+      context: ${APP_DATA_DIR}/app-proxy
       dockerfile: Dockerfile
     image: mystore-hummingbot-app-proxy:latest
     container_name: mystore-hummingbot_app_proxy_1
@@ -10,23 +12,29 @@ services:
       - umbrel_main
     restart: unless-stopped
     volumes:
-      - ./umbrel-app.yml:/extra/umbrel-app.yml:ro
+      - ${APP_DATA_DIR}/umbrel-app.yml:/extra/umbrel-app.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /mnt/data/umbrel/secrets:/run/umbrel-secrets:ro
     environment:
       APP_HOST: mystore-hummingbot_info_1
       APP_PORT: "80"
+      AUTH_SERVICE_PORT: ${AUTH_PORT}
+      UMBREL_AUTH_SECRET: ${UMBREL_AUTH_SECRET}
+      MANAGER_IP: ${MANAGER_IP}
+      MANAGER_PORT: ${MANAGER_PORT:-3006}
+      JWT_SECRET: ${JWT_SECRET}
+      PROXY_AUTH_ADD: "true"
 
   info:
     image: nginx:alpine
     container_name: mystore-hummingbot_info_1
     volumes:
-      - ./info-page:/usr/share/nginx/html:ro
+      - ${APP_DATA_DIR}/info-page:/usr/share/nginx/html:ro
     restart: unless-stopped
 
   hummingbot:
     build:
-      context: .
+      context: ${APP_DATA_DIR}
       dockerfile: Dockerfile
     image: mystore-hummingbot:developer
     container_name: mystore-hummingbot_hummingbot_1
