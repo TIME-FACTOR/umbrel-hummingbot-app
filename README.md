@@ -35,9 +35,10 @@ First install can take **15–20 minutes** on a Raspberry Pi. Do not stop the ap
 - `umbrel-app-store.yml` — Example store (id: `mystore`, name: My App Store). Replace with your own.
 - `mystore-hummingbot/` — The Hummingbot app (**developer version**, runs from source):
   - `umbrel-app.yml` — Listing for Umbrel
-  - `docker-compose.yml` — Builds from `Dockerfile`, mounts `source/` so you can replace files for custom models
-  - `Dockerfile` — Python + build deps + TA-Lib; runs Hummingbot from mounted source
+  - `docker-compose.yml` — Builds Hummingbot image and **app-proxy wrapper**; mounts `source/`, mounts Docker socket for proxy
+  - `Dockerfile` — Python 3.12 + build deps + TA-Lib; runs Hummingbot from mounted source
   - `entrypoint.sh` — On first run clones the repo into `source/`; installs with `pip install -e` so your edits are used
+  - `app-proxy/` — **Proxy wrapper** so the app tile works in the dashboard: at startup reads `UMBREL_AUTH_SECRET`, `JWT_SECRET`, and `MANAGER_IP` from the Umbrel auth container (via Docker socket), then starts the real proxy. No manual `.env.proxy` or "restarting..." fixes.
   - `data/` — Placeholder dirs including `source/` (the Hummingbot repo lives here after first run)
 
 **Developer version:** The app runs Hummingbot from the **source** folder, not the pre-built Docker image. On first start the container clones the repo into `source/`. Replace any files you need (e.g. for custom models) in that folder, then restart the app so changes apply. Hummingbot is a **CLI** app—use Terminal or SSH to attach. Optionally **Gateway** (DEX) is on port 15888.

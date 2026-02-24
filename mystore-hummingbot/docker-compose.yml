@@ -1,12 +1,16 @@
 services:
   app_proxy:
-    image: getumbrel/app-proxy:1.0.0
+    build:
+      context: ./app-proxy
+      dockerfile: Dockerfile
+    image: mystore-hummingbot-app-proxy:latest
+    container_name: mystore-hummingbot_app_proxy_1
     volumes:
       - ./umbrel-app.yml:/extra/umbrel-app.yml:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       APP_HOST: mystore-hummingbot_info_1
       APP_PORT: "80"
-    container_name: mystore-hummingbot_app_proxy_1
 
   info:
     image: nginx:alpine
