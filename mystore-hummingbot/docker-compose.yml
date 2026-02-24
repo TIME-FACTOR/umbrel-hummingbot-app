@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  app_proxy:
+    environment:
+      APP_HOST: mystore-hummingbot_info_1
+      APP_PORT: "80"
+    container_name: mystore-hummingbot_app_proxy_1
+
+  info:
+    image: nginx:alpine
+    container_name: mystore-hummingbot_info_1
+    volumes:
+      - ./info-page:/usr/share/nginx/html:ro
+    restart: unless-stopped
+
+  hummingbot:
+    image: hummingbot/hummingbot:latest
+    container_name: mystore-hummingbot_hummingbot_1
+    tty: true
+    stdin_open: true
+    volumes:
+      - ${APP_DATA_DIR}/conf:/home/hummingbot/conf
+      - ${APP_DATA_DIR}/logs:/home/hummingbot/logs
+      - ${APP_DATA_DIR}/data:/home/hummingbot/data
+      - ${APP_DATA_DIR}/certs:/home/hummingbot/certs
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+    restart: unless-stopped
+
+  gateway:
+    image: hummingbot/gateway:latest
+    container_name: mystore-hummingbot_gateway_1
+    ports:
+      - "15888:15888"
+    volumes:
+      - ${APP_DATA_DIR}/gateway-files/conf:/home/gateway/conf
+      - ${APP_DATA_DIR}/gateway-files/logs:/home/gateway/logs
+      - ${APP_DATA_DIR}/certs:/home/gateway/certs
+    environment:
+      - GATEWAY_PASSPHRASE=admin
+      - DEV=true
+    restart: unless-stopped
+    profiles:
+      - gateway

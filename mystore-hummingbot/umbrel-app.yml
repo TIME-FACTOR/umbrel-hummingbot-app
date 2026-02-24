@@ -1,0 +1,24 @@
+manifestVersion: 1
+id: mystore-hummingbot
+name: Hummingbot
+tagline: Open-source crypto trading bots for CEX and DEX
+icon: https://hummingbot.org/assets/img/hummingbot-logo.svg
+category: Finance
+version: "1.0.0"
+port: 80
+description: >-
+  Hummingbot is an open-source framework to build and run automated crypto
+  trading strategies (market making, arbitrage, etc.) on 100+ centralized and
+  decentralized exchanges. This app runs the Hummingbot CLI in a container;
+  connect via Terminal/SSH to attach and use the bot. Optional Gateway service
+  for DEX connectivity (port 15888).
+developer: Hummingbot Foundation
+website: https://hummingbot.org
+repo: https://github.com/hummingbot/hummingbot
+support: https://discord.gg/hummingbot
+releaseNotes: >-
+  Community app packaging for Umbrel. Connect via terminal to use the CLI.
+dependencies: []
+path: ""
+defaultUsername: ""
+defaultPassword: ""

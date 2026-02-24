@@ -1,0 +1,4 @@
+# Replace "mystore" and "My App Store" with your own store id and name.
+# App IDs in this store must start with this id (e.g. mystore-hummingbot).
+id: "mystore"
+name: "My App Store"
