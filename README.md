@@ -13,6 +13,8 @@ This folder contains everything needed to run [Hummingbot](https://github.com/hu
 
 You then add your repo URL in Umbrel: **Settings → App Store → Add community app store** and install apps from it.
 
+**If install fails or keeps stopping:** Umbrel may be using an old copy of the app. Do this to force it to use the latest config from GitHub: (1) **Uninstall** the Hummingbot app from the Umbrel dashboard. (2) **Remove** the community store (Settings → App Store → remove this store). (3) **Re-add** the store with the same URL. (4) **Install** Hummingbot again. First install can take 10–15 minutes on a Pi (build + dependency install).
+
 ## What’s in this folder
 
 - `umbrel-app-store.yml` — Example store (id: `mystore`, name: My App Store). Replace with your own.
