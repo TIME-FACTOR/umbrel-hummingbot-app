@@ -1,6 +1,7 @@
 # Developer image: run Hummingbot from source. Default is built-in clone; mount your own
 # at /home/hummingbot/source (app-data/source) to use custom models / replaced files.
-FROM python:3.11-slim-bookworm
+# pandas-ta>=0.4.71b requires Python >=3.12
+FROM python:3.12-slim-bookworm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
