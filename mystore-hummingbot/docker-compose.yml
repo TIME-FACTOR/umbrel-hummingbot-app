@@ -8,6 +8,7 @@ services:
     volumes:
       - ./umbrel-app.yml:/extra/umbrel-app.yml:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /mnt/data/umbrel/secrets:/run/umbrel-secrets:ro
     environment:
       APP_HOST: mystore-hummingbot_info_1
       APP_PORT: "80"

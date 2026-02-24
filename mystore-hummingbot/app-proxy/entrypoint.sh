@@ -1,41 +1,41 @@
 #!/bin/sh
-set -e
-SOCK="${DOCKER_HOST:-/var/run/docker.sock}"
-TMP="/tmp/auth-inspect.json"
-if [ -S "$SOCK" ]; then
-  node -e "
+# Always resolve MANAGER_IP via DNS so proxy works with or without docker.sock (e.g. after Umbrel restart).
+MANAGER_IP=$(node -e "try{console.log(require('dns').lookupSync('auth',{family:4}))}catch(e){}" 2>/dev/null)
+if [ -z "$MANAGER_IP" ]; then
+  SOCK="${DOCKER_HOST:-/var/run/docker.sock}"
+  if [ -S "$SOCK" ]; then
+    node -e "
     const net=require('net'); const fs=require('fs');
     const s=net.connect('$SOCK');
-    const req='GET /containers/auth/json HTTP/1.0\r\nHost: localhost\r\n\r\n';
-    let buf=''; s.write(req); s.on('data',c=>buf+=c); s.on('end',()=>{
-      const body=buf.split('\r\n\r\n')[1]||'';
-      try { fs.writeFileSync('$TMP', body); } catch(e) {}
+    s.write('GET /containers/auth/json HTTP/1.0\r\nHost: localhost\r\n\r\n');
+    let buf=''; s.on('data',c=>buf+=c); s.on('end',()=>{
+      const b=(buf.split('\r\n\r\n')[1]||'');
+      try{const d=JSON.parse(b);const n=d.NetworkSettings&&d.NetworkSettings.Networks;if(n){const v=Object.values(n)[0];if(v&&v.IPAddress)fs.writeFileSync('/tmp/mip',v.IPAddress)}}catch(e){}
     }); s.on('error',()=>{});
-  " 2>/dev/null
-  sleep 1
-  if [ -s "$TMP" ]; then
-    MANAGER_IP=$(node -e "
-      try {
-        const j=require('fs').readFileSync('$TMP','utf8'); const d=JSON.parse(j);
-        const n=d.NetworkSettings&&d.NetworkSettings.Networks;
-        if(n) { const v=Object.values(n)[0]; if(v&&v.IPAddress) process.stdout.write(v.IPAddress); }
-      } catch(e) {}
-    " 2>/dev/null)
-    node -e "
-      try {
-        const j=require('fs').readFileSync('$TMP','utf8'); const d=JSON.parse(j);
-        const e=d.Config&&d.Config.Env||[];
-        e.filter(x=>x.startsWith('UMBREL_AUTH_SECRET=')||x.startsWith('JWT_SECRET=')).forEach(x=>console.log(x));
-      } catch(e) {}
-    " 2>/dev/null | while read -r line; do export "$line"; done
-    [ -n "$MANAGER_IP" ] && export MANAGER_IP
+    " 2>/dev/null
+    sleep 2
+    [ -f /tmp/mip ] && MANAGER_IP=$(cat /tmp/mip) && rm -f /tmp/mip
+    if [ -z "$MANAGER_IP" ]; then
+      node -e "
+      const net=require('net'); const fs=require('fs');
+      const s=net.connect('$SOCK');
+      s.write('GET /containers/auth/json HTTP/1.0\r\nHost: localhost\r\n\r\n');
+      let buf=''; s.on('data',c=>buf+=c); s.on('end',()=>{
+        try{const d=JSON.parse((buf.split('\r\n\r\n')[1]||''));const e=d.Config&&d.Config.Env||[];e.filter(x=>x.startsWith('UMBREL_AUTH_SECRET=')||x.startsWith('JWT_SECRET=')).forEach(x=>fs.appendFileSync('/tmp/env','export '+x+'\n'))}catch(e){}
+      }); s.on('error',()=>{});
+      " 2>/dev/null
+      sleep 1
+      [ -f /tmp/env ] && . /tmp/env 2>/dev/null; rm -f /tmp/env
+    fi
   fi
-  rm -f "$TMP"
 fi
-[ -z "$MANAGER_IP" ] && export MANAGER_IP=127.0.0.1
-[ -z "$MANAGER_PORT" ] && export MANAGER_PORT=3006
-[ -z "$AUTH_SERVICE_PORT" ] && export AUTH_SERVICE_PORT=2000
+[ -z "$MANAGER_IP" ] && MANAGER_IP=$(node -e "try{console.log(require('dns').lookupSync('auth',{family:4}))}catch(e){}" 2>/dev/null)
+[ -z "$MANAGER_IP" ] && MANAGER_IP=172.17.0.1
+[ -f /run/umbrel-secrets/jwt ] && export JWT_SECRET=$(cat /run/umbrel-secrets/jwt)
 [ -z "$UMBREL_AUTH_SECRET" ] && export UMBREL_AUTH_SECRET=default
 [ -z "$JWT_SECRET" ] && export JWT_SECRET=default
-[ -z "$PROXY_AUTH_ADD" ] && export PROXY_AUTH_ADD=false
+export MANAGER_IP
+export MANAGER_PORT=${MANAGER_PORT:-3006}
+export AUTH_SERVICE_PORT=${AUTH_SERVICE_PORT:-2000}
+export PROXY_AUTH_ADD=${PROXY_AUTH_ADD:-false}
 exec node ./bin/www
