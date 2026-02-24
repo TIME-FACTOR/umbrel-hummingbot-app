@@ -13,7 +13,22 @@ This folder contains everything needed to run [Hummingbot](https://github.com/hu
 
 You then add your repo URL in Umbrel: **Settings → App Store → Add community app store** and install apps from it.
 
-**If install fails or keeps stopping:** Umbrel may be using an old copy of the app. Do this to force it to use the latest config from GitHub: (1) **Uninstall** the Hummingbot app from the Umbrel dashboard. (2) **Remove** the community store (Settings → App Store → remove this store). (3) **Re-add** the store with the same URL. (4) **Install** Hummingbot again. First install can take 10–15 minutes on a Pi (build + dependency install).
+**If install fails or keeps stopping:**
+
+1. **Force Umbrel to use the latest app:** (1) Uninstall the Hummingbot app from the Umbrel dashboard. (2) Remove the community store (Settings → App Store → remove this store). (3) Re-add the store (same URL). (4) Install Hummingbot again.
+
+2. **If it still fails after install:** Umbrel may have used an old Docker image. SSH into your Pi and run a **one-time rebuild** (replace `umbrel` and `192.168.0.8` with your user/host):
+   ```bash
+   ssh umbrel@YOUR_PI_IP
+   cd /mnt/data/umbrel/app-data/mystore-hummingbot   # or ~/umbrel/app-data/mystore-hummingbot on older Umbrel
+   echo 'APP_DATA_DIR='$(pwd) > .env
+   sudo docker compose down
+   sudo docker compose build --no-cache
+   sudo docker compose up -d
+   ```
+   First build takes ~10 min; first container start then runs `pip install -e` (another ~5–10 min). Check logs: `sudo docker logs -f mystore-hummingbot_hummingbot_1`.
+
+First install can take **15–20 minutes** on a Raspberry Pi. Do not stop the app until you see the Hummingbot CLI prompt or "Replace files in source/..." in the logs.
 
 ## What’s in this folder
 
