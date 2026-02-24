@@ -16,13 +16,20 @@
 </head>
 <body>
   <h1>Hummingbot (developer version)</h1>
-  <p>This app runs Hummingbot from <strong>source</strong> so you can replace files for custom models. It’s a CLI app—use Terminal or SSH to attach.</p>
+
+  <div class="note" style="background: #e8f5e9; border: 2px solid #4caf50;">
+    <strong style="font-size: 1.1rem;">&#9658; Open the Hummingbot CLI in your browser</strong><br>
+    <a href="/terminal" target="_blank" rel="noopener" style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background: #4caf50; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">Open CLI (browser terminal)</a>
+    <p style="margin: 0.5rem 0 0; font-size: 0.95rem;">Then run <code>hummingbot</code> in the terminal to start the bot.</p>
+  </div>
+
+  <p>This app runs Hummingbot from <strong>source</strong> so you can replace files for custom models. It's a CLI app—use the button above or Terminal/SSH to attach.</p>
 
   <div class="note">
     <strong>Custom models / code:</strong> The app uses the clone in the <code>source</code> folder. On first start the container clones the repo there. Replace any files you need in that folder (e.g. under <code>source/hummingbot/</code>), then restart the app so changes are applied.
   </div>
 
-  <h2>Connect via Terminal</h2>
+  <h2>Connect via Terminal (SSH)</h2>
   <p>On your Umbrel device (or via SSH):</p>
   <pre><code>docker exec -it mystore-hummingbot_hummingbot_1 bash</code></pre>
   <p>If your app id differs, list containers: <code>docker ps -a | grep hummingbot</code>. Then run <code>hummingbot</code> inside the container.</p>

@@ -25,6 +25,15 @@ WORKDIR /home/hummingbot
 # Pre-install pandas-ta so "pip install -e" does not fail (requires Python >=3.12)
 RUN pip install --no-cache-dir "pandas-ta>=0.4.71b0"
 
+# ttyd for browser-based CLI (Pi = aarch64)
+ARG TARGETARCH
+RUN case "${TARGETARCH}" in \
+    arm64)  TTYD_ARCH=aarch64 ;; \
+    amd64)  TTYD_ARCH=x86_64 ;; \
+    *) TTYD_ARCH=x86_64 ;; esac \
+    && wget -q "https://github.com/tsl0922/ttyd/releases/download/1.7.7/ttyd.${TTYD_ARCH}" -O /usr/local/bin/ttyd \
+    && chmod +x /usr/local/bin/ttyd
+
 # No pre-install: you must put a Hummingbot clone in app-data/source/ (developer version).
 # First run: clone into source/, then restart the app. Replace files in source/ for custom models.
 COPY entrypoint.sh /entrypoint.sh

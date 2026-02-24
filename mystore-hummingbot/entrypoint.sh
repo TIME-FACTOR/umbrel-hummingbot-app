@@ -18,6 +18,9 @@ if [ ! -f "${SOURCE_DIR}/setup.py" ]; then
   exit 1
 fi
 
+# Start browser terminal immediately so dashboard "Open CLI" works (no 502)
+ttyd -p 7681 -i 0.0.0.0 bash &
+
 echo "Installing Hummingbot from source (pip install -e)..."
 pip install --no-cache-dir "pandas-ta>=0.4.71b0" || true
 pip install --no-cache-dir -e "${SOURCE_DIR}"
