@@ -22,6 +22,9 @@ RUN wget -q http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz \
 ENV PYTHONUNBUFFERED=1
 WORKDIR /home/hummingbot
 
+# Pre-install pandas-ta so "pip install -e" does not fail (requires Python >=3.12)
+RUN pip install --no-cache-dir "pandas-ta>=0.4.71b0"
+
 # No pre-install: you must put a Hummingbot clone in app-data/source/ (developer version).
 # First run: clone into source/, then restart the app. Replace files in source/ for custom models.
 COPY entrypoint.sh /entrypoint.sh

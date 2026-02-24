@@ -19,6 +19,7 @@ if [ ! -f "${SOURCE_DIR}/setup.py" ]; then
 fi
 
 echo "Installing Hummingbot from source (pip install -e)..."
+pip install --no-cache-dir "pandas-ta>=0.4.71b0" || true
 pip install --no-cache-dir -e "${SOURCE_DIR}"
 echo "Replace files in source/ for custom models, then restart the app to apply."
 exec hummingbot
