@@ -16,12 +16,14 @@ You then add your repo URL in Umbrel: **Settings → App Store → Add community
 ## What’s in this folder
 
 - `umbrel-app-store.yml` — Example store (id: `mystore`, name: My App Store). Replace with your own.
-- `mystore-hummingbot/` — The Hummingbot app:
+- `mystore-hummingbot/` — The Hummingbot app (**developer version**, runs from source):
   - `umbrel-app.yml` — Listing for Umbrel
-  - `docker-compose.yml` — Hummingbot + Gateway (optional) + small info server so Umbrel has a page to open
-  - `data/` — Placeholder dirs so Umbrel creates them (conf, logs, etc.)
+  - `docker-compose.yml` — Builds from `Dockerfile`, mounts `source/` so you can replace files for custom models
+  - `Dockerfile` — Python + build deps + TA-Lib; runs Hummingbot from mounted source
+  - `entrypoint.sh` — On first run clones the repo into `source/`; installs with `pip install -e` so your edits are used
+  - `data/` — Placeholder dirs including `source/` (the Hummingbot repo lives here after first run)
 
-Hummingbot is a **CLI** app. The “Open” button in Umbrel will show a page with instructions to connect via **Terminal** (or SSH). Optionally, **Gateway** (DEX middleware) runs and is reachable on port 15888 for API use.
+**Developer version:** The app runs Hummingbot from the **source** folder, not the pre-built Docker image. On first start the container clones the repo into `source/`. Replace any files you need (e.g. for custom models) in that folder, then restart the app so changes apply. Hummingbot is a **CLI** app—use Terminal or SSH to attach. Optionally **Gateway** (DEX) is on port 15888.
 
 ## Step-by-step: run Hummingbot as a community app
 
@@ -75,7 +77,15 @@ Container name depends on your app store id (e.g. `mystore-hummingbot_hummingbot
 docker ps -a | grep hummingbot
 ```
 
-### 5. (Optional) Use Gateway for DEX
+### 5. Developer: custom models / replace files
+
+The app runs from the **source** folder (e.g. `/mnt/data/umbrel/app-data/mystore-hummingbot/source/` on the Pi). On first start the container clones the Hummingbot repo there. To use your own code or custom models:
+
+1. Replace or add files under `source/` (e.g. `source/hummingbot/...`).
+2. Restart the app so the container runs `pip install -e` again and picks up changes.
+3. Attach with `docker exec -it mystore-hummingbot_hummingbot_1 bash` and run `hummingbot`.
+
+### 6. (Optional) Use Gateway for DEX
 
 The included `docker-compose` can run **Hummingbot Gateway** (DEX middleware) so Hummingbot can talk to DEXs. Gateway listens on port **15888**. If you use it, point Hummingbot at your Umbrel host and port 15888 (e.g. in Hummingbot config or when prompted for Gateway URL).
 
