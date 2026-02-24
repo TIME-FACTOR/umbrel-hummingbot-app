@@ -5,7 +5,7 @@ tagline: Run from source—replace files for custom models (CEX/DEX bots)
 icon: https://hummingbot.org/assets/img/hummingbot-logo.svg
 category: Finance
 version: "1.0.0"
-port: 80
+port: 8580
 description: >-
   Developer version: Hummingbot runs from source so you can replace files for
   custom models. On first start the repo is cloned into the source folder;
