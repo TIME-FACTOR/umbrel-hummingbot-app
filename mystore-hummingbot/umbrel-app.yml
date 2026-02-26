@@ -2,7 +2,7 @@ manifestVersion: 1
 id: mystore-hummingbot
 name: Hummingbot (Developer)
 tagline: Run from source—replace files for custom models (CEX/DEX bots)
-icon: https://raw.githubusercontent.com/TIME-FACTOR/umbrel-hummingbot-app/main/mystore-hummingbot/cover.jpg
+icon: https://raw.githubusercontent.com/TIME-FACTOR/umbrel-hummingbot-app/main/mystore-hummingbot/cover.jpg?v=2
 category: Finance
 version: "1.0.0"
 port: 8580
@@ -16,7 +16,7 @@ website: https://hummingbot.org
 repo: https://github.com/hummingbot/hummingbot
 support: https://discord.gg/hummingbot
 gallery:
-  - https://raw.githubusercontent.com/TIME-FACTOR/umbrel-hummingbot-app/main/mystore-hummingbot/cover.jpg
+  - https://raw.githubusercontent.com/TIME-FACTOR/umbrel-hummingbot-app/main/mystore-hummingbot/cover.jpg?v=2
 releaseNotes: >-
   Community app packaging for Umbrel. Connect via terminal to use the CLI.
 dependencies: []
