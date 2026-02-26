@@ -16,7 +16,7 @@ website: https://hummingbot.org
 repo: https://github.com/hummingbot/hummingbot
 support: https://discord.gg/hummingbot
 gallery:
-  - cover.jpg
+  - https://raw.githubusercontent.com/TIME-FACTOR/umbrel-hummingbot-app/main/mystore-hummingbot/cover.jpg
 releaseNotes: >-
   Community app packaging for Umbrel. Connect via terminal to use the CLI.
 dependencies: []
