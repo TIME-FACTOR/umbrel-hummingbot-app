@@ -2,7 +2,7 @@ manifestVersion: 1
 id: mystore-hummingbot
 name: Hummingbot (Developer)
 tagline: Run from source—replace files for custom models (CEX/DEX bots)
-icon: https://hummingbot.org/assets/img/hummingbot-logo.svg
+icon: https://raw.githubusercontent.com/TIME-FACTOR/umbrel-hummingbot-app/main/mystore-hummingbot/cover.jpg
 category: Finance
 version: "1.0.0"
 port: 8580
