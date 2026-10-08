@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libffi-dev \
     libssl-dev \
     wget \
+    tmux \
     && rm -rf /var/lib/apt/lists/*
 
 # TA-Lib from source (Hummingbot dependency); --build needed for aarch64/Pi
@@ -37,5 +38,6 @@ RUN case "${TARGETARCH}" in \
 # No pre-install: you must put a Hummingbot clone in app-data/source/ (developer version).
 # First run: clone into source/, then restart the app. Replace files in source/ for custom models.
 COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY ttyd-hummingbot.sh /ttyd-hummingbot.sh
+RUN chmod +x /entrypoint.sh /ttyd-hummingbot.sh
 ENTRYPOINT ["/entrypoint.sh"]

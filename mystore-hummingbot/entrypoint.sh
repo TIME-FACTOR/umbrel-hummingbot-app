@@ -18,11 +18,21 @@ if [ ! -f "${SOURCE_DIR}/setup.py" ]; then
   exit 1
 fi
 
-# Start browser terminal immediately so dashboard "Open CLI" works (no 502)
-ttyd -p 7681 -i 0.0.0.0 bash &
+# Start browser terminal early so /terminal is reachable; wrapper will attach once Hummingbot is ready.
+ttyd -p 7681 -i 0.0.0.0 --writable /ttyd-hummingbot.sh &
 
 echo "Installing Hummingbot from source (pip install -e)..."
-pip install --no-cache-dir "pandas-ta>=0.4.71b0" || true
-pip install --no-cache-dir -e "${SOURCE_DIR}"
+: > /tmp/pip-install.log
+pip install --no-cache-dir "pandas-ta>=0.4.71b0" 2>&1 | tee -a /tmp/pip-install.log || true
+pip install --no-cache-dir -e "${SOURCE_DIR}" 2>&1 | tee -a /tmp/pip-install.log
+pip install --no-cache-dir ptpython 2>&1 | tee -a /tmp/pip-install.log || true
 echo "Replace files in source/ for custom models, then restart the app to apply."
-exec hummingbot
+
+# Start a persistent Hummingbot tmux session (if not already running).
+if ! tmux has-session -t hb 2>/dev/null; then
+  echo "Starting Hummingbot tmux session 'hb'..."
+  tmux new-session -d -s hb "cd \"${SOURCE_DIR}\" && python3 bin/hummingbot_quickstart.py"
+fi
+
+# Keep the container running; Hummingbot lives inside tmux, ttyd attaches to it.
+exec tail -f /dev/null

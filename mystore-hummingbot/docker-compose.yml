@@ -28,6 +28,9 @@ services:
   info:
     image: nginx:alpine
     container_name: mystore-hummingbot_info_1
+    networks:
+      - default   # reach hummingbot (ttyd) for /terminal
+      - umbrel_main
     volumes:
       - ${APP_DATA_DIR}/info-page:/usr/share/nginx/html:ro
       - ${APP_DATA_DIR}/info-page/nginx.conf:/etc/nginx/conf.d/default.conf:ro
